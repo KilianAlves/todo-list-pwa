@@ -1,0 +1,104 @@
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 1280px;
+  margin: auto;
+}
+
+header {
+  padding: 1rem;
+  background-color: aliceblue;
+  display: flex;
+  justify-content: space-between;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem;
+  background-color: beige;
+}
+
+.todo-add-form {
+  display: flex;
+  margin: 0 1rem;
+  column-gap: 0.2rem;
+}
+
+.todo-add-input {
+  font-size: x-large;
+}
+
+.todo-add-submit {
+  background-color: aliceblue;
+}
+
+input[type="text"] {
+  padding: 0.2rem;
+  min-width: 5rem;
+  flex: 1;
+}
+
+input[type="submit"] {
+  padding: 0.2rem;
+}
+
+.main-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.todo-item {
+  display: flex;
+  list-style-type: none;
+  background-color: rgb(248, 248, 130);
+  margin: 0.3rem 1rem;
+  padding: 0.3rem 0.1rem 0.3rem 1.8rem;
+  border: 1px solid;
+  box-shadow: 10px 5px 5px black;
+  position: relative;
+}
+
+.todo-item:hover {
+  box-shadow: 1px 1px 5px black;
+}
+
+.todo-item.done {
+  background: #CCFF99;
+  padding-left: 0.3rem;
+}
+
+.todo-item.done > *:first-child {
+  color: green;
+}
+
+.todo-item button {
+  background-color: transparent;
+  cursor: pointer;
+  margin: 0;
+  border: none;
+}
+
+.todo-item form {
+  display: flex;
+  flex: 1;
+}
+
+.todo-text {
+  flex: 1;
+  text-align: left;
+  overflow-x: auto;
+}
+
+.progress-bar {
+  text-align: center;
+  font-size: xxx-large;
+}
