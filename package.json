@@ -6,10 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "watch": "npm-watch build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "preprod": "npm run build",
-    "prod": "php -S localhost:9000 -t dist",
+    "serve": "php -S localhost:9000 -t dist",
     "api:start": "json-server --port 7000 --watch api/todos.json",
     "api:restore": "cp api/todos.json.save api/todos.json"
   },
@@ -30,7 +30,19 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "npm-watch": "^0.11.0",
     "prop-types": "^15.8.1",
     "vite": "^4.4.5"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "src",
+        "public",
+        "index.html",
+        "vite.config.js"
+      ],
+      "extensions": "js,jsx,css,json"
+    }
   }
 }
