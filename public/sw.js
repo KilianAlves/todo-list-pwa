@@ -10,13 +10,25 @@ self.addEventListener("install", (event) => {
         addResourcesToCache([
             "/",
             "/index.html",
-            "/js/app.js",
             "/js/registerSw.js",
             "/css/style.css",
-            "/img/icon-192x192.png",
-            "/img/icon-512x512.png",
         ])
     );
 });
+
+
+const cacheFirst = async (request) => {
+    const responseFromCache = await caches.match(request);
+    if (responseFromCache) {
+      return responseFromCache;
+    }
+    const responseFromNetwork = await fetch(request);
+    addResourcesToCache(request, responseFromNetwork.clone());
+    return responseFromNetwork;
+  };
+  
+  self.addEventListener("fetch", (event) => {
+    event.respondWith(cacheFirst(event.request));
+  });
 
 self.skipWaiting();
