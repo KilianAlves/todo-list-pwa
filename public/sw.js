@@ -1,4 +1,4 @@
-const STATIC_CACHE_NAME = "todosApp-static.v0";
+const STATIC_CACHE_NAME = "todosApp-static.v1";
 
 const addResourcesToCache = async (ressources) => {
     const cache = await caches.open(STATIC_CACHE_NAME);
@@ -9,6 +9,17 @@ const addResourcesToCache = async (ressources) => {
 const putInCache = async (request, response) => {
   const cache = await caches.open(STATIC_CACHE_NAME);
   await cache.put(request, response);
+};
+
+const deleteCache = async (key) => {
+  await caches.delete(key);
+};
+
+const deleteOldCaches = async () => {
+  const cacheKeepList = ["v2"];
+  const keyList = await caches.keys();
+  const cachesToDelete = keyList.filter((key) => !cacheKeepList.includes(key));
+  await Promise.all(cachesToDelete.map(deleteCache));
 };
 
 const cacheFirst = async (request) => {
@@ -35,6 +46,11 @@ self.addEventListener("fetch", (event) => {
       })
     )
   }
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(deleteOldCaches());
+  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
