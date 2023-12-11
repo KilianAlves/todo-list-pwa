@@ -6,19 +6,41 @@ const addResourcesToCache = async (ressources) => {
     await cache.addAll(ressources);
 }
 
+const putInCache = async (request, response) => {
+  const cache = await caches.open(STATIC_CACHE_NAME);
+  await cache.put(request, response);
+};
+
 const cacheFirst = async (request) => {
   const responseFromCache = await caches.match(request);
   if (responseFromCache) {
     return responseFromCache;
   }
   const responseFromNetwork = await fetch(request);
-  addResourcesToCache(request, responseFromNetwork.clone());
+  putInCache(request, responseFromNetwork.clone());
   return responseFromNetwork;
 };
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(cacheFirst({request: event.request}));
+  // Si la requête cible une url contenant le fichier background.css
+  if (event.request.url.includes("background.css")) {
+    // La réponse produite sera
+    event.respondWith(
+      // Le résultat de la requête vers le fichier background.css
+      fetch(event.request)
+      // Ou en cas d'échec
+      .catch(() => {
+        // une réponse fabriquée avec un fond orange
+        return new Response(".main {background: orange;}", { headers: { "Content-Type": "text/css" }});
+      })
+    )
+  }
 });
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(cacheFirst(event.request));
+});
+
 
 // Erreur dans les éléments mis en cache ?
 self.addEventListener("install", (event) => {
@@ -26,17 +48,13 @@ self.addEventListener("install", (event) => {
         addResourcesToCache([
             "/",
             "/index.html",
-            "/assets/index-e1f2cdea.js",
-            "/js/registerSw.js",
             "/css/style.css",
-            "/icons/icon-192x192.png",
-            "/icons/icon-512x512.png",
             "/manifest.json",
-            "/icons/favicon.ico"
+            "/icons/favicon.ico",
+            "/icons/icon-512x512.png"
         ])
     );
 });
 
 
-// provoque erreur ??
 self.skipWaiting();
