@@ -1,10 +1,20 @@
+import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
+
+cleanupOutdatedCaches()
+
+precacheAndRoute(self.__WB_MANIFEST)
+
 const STATIC_CACHE_NAME = "todosApp-static.v1";
 
+
+/*
 const addResourcesToCache = async (ressources) => {
     const cache = await caches.open(STATIC_CACHE_NAME);
     // erreur request fail ?
     await cache.addAll(ressources);
 }
+*/
+
 
 const putInCache = async (request, response) => {
   const cache = await caches.open(STATIC_CACHE_NAME);
@@ -22,6 +32,7 @@ const deleteOldCaches = async () => {
   await Promise.all(cachesToDelete.map(deleteCache));
 };
 
+/*
 const cacheFirst = async (request) => {
   const responseFromCache = await caches.match(request);
   if (responseFromCache) {
@@ -31,6 +42,7 @@ const cacheFirst = async (request) => {
   putInCache(request, responseFromNetwork.clone());
   return responseFromNetwork;
 };
+*/
 
 // Mise en cache des données issues de l'API
 
@@ -94,10 +106,11 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+/*
 self.addEventListener("fetch", (event) => {
   event.respondWith(cacheFirst(event.request));
 });
-
+*/
 
 /*
 self.addEventListener("install", (event) => {
