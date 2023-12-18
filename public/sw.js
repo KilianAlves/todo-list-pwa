@@ -99,7 +99,7 @@ self.addEventListener("fetch", (event) => {
 });
 
 
-// Erreur dans les éléments mis en cache ?
+/*
 self.addEventListener("install", (event) => {
     event.waitUntil(
         addResourcesToCache([
@@ -112,6 +112,16 @@ self.addEventListener("install", (event) => {
         ])
     );
 });
+*/
 
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+      caches.open(STATIC_CACHE_NAME)
+          .then((cache) => {
+              let urlsToCache = self.__WB_MANIFEST.map(item => item.url);
+              return cache.addAll(urlsToCache);
+          })
+  );
+});
 
 self.skipWaiting();
