@@ -1,7 +1,8 @@
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
 import {registerRoute} from 'workbox-routing';
-
-
+import { NetworkFirst } from 'workbox-strategies';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import { ExpirationPlugin } from 'workbox-expiration';
 
 const matchCb = ({url}) => {
   return url.href.includes("background.css");
@@ -13,7 +14,17 @@ const handlerCb = async ({url, request, event, params}) => {
     headers: response.headers,
   });
 };
-registerRoute(matchCb, handlerCb);
+registerRoute(matchCb, new NetworkFirst({
+  cacheName: 'todos',
+  plugins: [
+      new CacheableResponsePlugin({
+          statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+          maxAgeSeconds: 24 * 60 * 60 * 30, // 1 mois
+      }),
+  ],
+}));
 
 
 cleanupOutdatedCaches()
