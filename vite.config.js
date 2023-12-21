@@ -9,7 +9,7 @@ export default defineConfig({
     VitePWA({
       strategies: 'injectManifest',
       injectManifest: {
-        swSrc: 'sw.js'
+        swSrc: 'public/sw.js'
       },
       includeAssets: [
         'icons/*.png'
@@ -45,8 +45,8 @@ export default defineConfig({
               "sizes": "180x180"
           }
       ],
-        "id": "/?source=pwa",
-        "start_url": "/?source=pwa",
+        "id": "/index.html",
+        "start_url": "/",
         "background_color": "#3367D6",
         "display": "standalone",
         "scope": "/",

@@ -1,9 +1,25 @@
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
+import {registerRoute} from 'workbox-routing';
+
+
+
+const matchCb = ({url}) => {
+  return url.href.includes("background.css");
+};
+const handlerCb = async ({url, request, event, params}) => {
+  const response = await fetch(request);
+  const responseBody = await response.text();
+  return new Response(`${responseBody} <!-- Look Ma. Added Content. -->`, {
+    headers: response.headers,
+  });
+};
+registerRoute(matchCb, handlerCb);
+
 
 cleanupOutdatedCaches()
 
 
-precacheAndRoute(self.__WB_MANIFEST)
+precacheAndRoute(self.__WB_MANIFEST.filter((file) => file.url !== "css/background.css"));
 
 
 const deleteOldCaches = async () => {
@@ -70,11 +86,6 @@ self.addEventListener("fetch", (event) => {
       })
     )
   }
-});
-
-self.addEventListener("activate", (event) => {
-  event.waitUntil(deleteOldCaches());
-  self.clients.claim();
 });
 
 
