@@ -2,47 +2,18 @@ import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
 
 cleanupOutdatedCaches()
 
+
 precacheAndRoute(self.__WB_MANIFEST)
 
-const STATIC_CACHE_NAME = "todosApp-static.v1";
-
-
-/*
-const addResourcesToCache = async (ressources) => {
-    const cache = await caches.open(STATIC_CACHE_NAME);
-    // erreur request fail ?
-    await cache.addAll(ressources);
-}
-*/
-
-
-const putInCache = async (request, response) => {
-  const cache = await caches.open(STATIC_CACHE_NAME);
-  await cache.put(request, response);
-};
-
-const deleteCache = async (key) => {
-  await caches.delete(key);
-};
 
 const deleteOldCaches = async () => {
-  const cacheKeepList = ["v2"];
-  const keyList = await caches.keys();
-  const cachesToDelete = keyList.filter((key) => !cacheKeepList.includes(key));
-  await Promise.all(cachesToDelete.map(deleteCache));
+  cleanupOutdatedCaches();
 };
 
-/*
-const cacheFirst = async (request) => {
-  const responseFromCache = await caches.match(request);
-  if (responseFromCache) {
-    return responseFromCache;
-  }
-  const responseFromNetwork = await fetch(request);
-  putInCache(request, responseFromNetwork.clone());
-  return responseFromNetwork;
-};
-*/
+self.addEventListener("activate", (event) => {
+  event.waitUntil(deleteOldCaches());
+});
+
 
 // Mise en cache des données issues de l'API
 
@@ -76,10 +47,10 @@ self.addEventListener("fetch", (event) => {
             });
         })
     );
-  } else {
+  } // else {
     // Pour les autres requêtes, utilisez la stratégie de cacheFirst déjà définie
-    event.respondWith(cacheFirst(request));
-  }
+    // event.respondWith(cacheFirst(request));
+  // }
 });
 
 
@@ -106,35 +77,6 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-/*
-self.addEventListener("fetch", (event) => {
-  event.respondWith(cacheFirst(event.request));
-});
-*/
 
-/*
-self.addEventListener("install", (event) => {
-    event.waitUntil(
-        addResourcesToCache([
-            "/",
-            "/index.html",
-            "/css/style.css",
-            "/manifest.json",
-            "/icons/favicon.ico",
-            "/icons/icon-512x512.png"
-        ])
-    );
-});
-*/
-
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-      caches.open(STATIC_CACHE_NAME)
-          .then((cache) => {
-              let urlsToCache = self.__WB_MANIFEST.map(item => item.url);
-              return cache.addAll(urlsToCache);
-          })
-  );
-});
 
 self.skipWaiting();
